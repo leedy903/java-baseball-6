@@ -2,60 +2,46 @@ package baseball;
 
 import camp.nextstep.edu.missionutils.Console;
 import camp.nextstep.edu.missionutils.Randoms;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Application {
     private static final int randomNumberLength = 3;
+    private static boolean isFinish = false;
+    private static boolean isStrike = false;
 
     public static void main(String[] args) {
-        // TODO: 프로그램 구현
+        playGame();
+    }
 
-        boolean isFinish = false;
+    private static void playGame() {
+        initGame();
+        while (!isFinish) {
+            String computer = getRandomNumber();
 
-        System.out.println("숫자 야구 게임을 시작합니다.");
-
-        while(!isFinish) {
-            List<Integer> randomNumbers = getRandomNumbers();
-            String computer = integerListToString(randomNumbers);
-
-            boolean isStrike = false;
-            while(!isStrike){
-                String user = Console.readLine();
-
-                validateUserInput(user);
+            isStrike = false;
+            while (!isStrike) {
+                String user = getUserInput();
 
                 int ball = countBall(computer, user);
                 int strike = countStrike(computer, user);
 
-                if (strike == randomNumberLength) {
-                    isStrike = true;
-                    System.out.println("3스트라이크\n" +
-                            "3개의 숫자를 모두 맞히셨습니다! 게임 종료\n" +
-                            "게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
-                    String replay = Console.readLine();
-                    validateReplayRange(replay);
-                    if(replay.equals("2")) {
-                        isFinish = true;
-                    }
-                }
-                else if (ball > 0 && strike > 0) {
-                    System.out.println(ball + "볼 " + strike + "스트라이크");
-                }
-                else if (ball > 0) {
-                    System.out.println(ball + "볼");
-                }
-                else if (strike > 0) {
-                    System.out.println(strike + "스트라이크");
-                }
-                else if (ball == 0 && strike == 0) {
-                    System.out.println("낫싱");
-                }
+                showResult(ball, strike);
+                checkReplay(strike);
             }
         }
-
         Console.close();
+    }
+
+    private static void initGame() {
+        System.out.println("숫자 야구 게임을 시작합니다.");
+        isFinish = false;
+    }
+
+    private static String getRandomNumber() {
+        List<Integer> randomNumbers = getRandomNumbers();
+        String randomNumber = integerListToString(randomNumbers);
+        return randomNumber;
     }
 
     private static List<Integer> getRandomNumbers() {
@@ -69,9 +55,22 @@ public class Application {
         return randomNumbers;
     }
 
+    private static String getUserInput() {
+        String userInput = Console.readLine();
+        validateUserInput(userInput);
+        return userInput;
+    }
+
+    private static String getUserReplayInput() {
+        String replay = Console.readLine();
+        validateReplayInput(replay);
+        return replay;
+    }
+
+
     private static String integerListToString(List<Integer> numbers) {
         String result = "";
-        for(int i = 0; i < numbers.size(); i++) {
+        for (int i = 0; i < numbers.size(); i++) {
             result += String.valueOf(numbers.get(i));
         }
         return result;
@@ -79,9 +78,9 @@ public class Application {
 
     private static int countBall(String computer, String user) {
         int ball = 0;
-        for(int i = 0; i < randomNumberLength; i++) {
+        for (int i = 0; i < randomNumberLength; i++) {
             char computerNumber = computer.charAt(i);
-            for(int j = 0; j < randomNumberLength; j++) {
+            for (int j = 0; j < randomNumberLength; j++) {
                 char userNumber = user.charAt(j);
                 if (i != j && computerNumber == userNumber) {
                     ball++;
@@ -93,7 +92,7 @@ public class Application {
 
     private static int countStrike(String computer, String user) {
         int strike = 0;
-        for(int i = 0; i < randomNumberLength; i++) {
+        for (int i = 0; i < randomNumberLength; i++) {
             char computerNumber = computer.charAt(i);
             char userNumber = user.charAt(i);
             if (computerNumber == userNumber) {
@@ -103,8 +102,40 @@ public class Application {
         return strike;
     }
 
-    private static void validateUserInputRange(String userInput) {
-        if (userInput.length() != 3) {
+    private static void showResult(int ball, int strike) {
+        StringBuilder sb = new StringBuilder();
+        if (ball > 0 && strike > 0) {
+            sb.append(ball).append("볼 ").append(strike).append("스트라이크");
+        } else if (ball > 0 && strike == 0) {
+            sb.append(ball).append("볼");
+        } else if (strike > 0 && ball == 0) {
+            sb.append(strike).append("스트라이크");
+        } else if (ball == 0 && strike == 0) {
+            sb.append("낫싱");
+        }
+        System.out.println(sb);
+    }
+
+    private static void checkReplay(int strike) {
+        if (strike == randomNumberLength) {
+            isStrike = true;
+            System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료\n" +
+                    "게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
+            String replay = getUserReplayInput();
+            if (replay.equals("2")) {
+                isFinish = true;
+            }
+        }
+    }
+
+    private static void validateUserInput(String userInput) {
+        validateUserInputLength(userInput);
+        validateUserInputType(userInput);
+        validateUserInputDuplicate(userInput);
+    }
+
+    private static void validateUserInputLength(String userInput) {
+        if (userInput.length() != randomNumberLength) {
             throw new IllegalArgumentException();
         }
     }
@@ -117,25 +148,19 @@ public class Application {
         }
     }
 
-    private static void validateUserInputDistinct(String userInput) {
+    private static void validateUserInputDuplicate(String userInput) {
         List<Integer> randomNumbers = new ArrayList<>();
         String[] userNumbers = userInput.split("");
-        for(int i = 0; i < userNumbers.length; i++) {
+        for (int i = 0; i < userNumbers.length; i++) {
             Integer userNumber = Integer.parseInt(userNumbers[i]);
-            if(randomNumbers.contains(userNumber)) {
+            if (randomNumbers.contains(userNumber)) {
                 throw new IllegalArgumentException();
             }
             randomNumbers.add(userNumber);
         }
     }
 
-    private static void validateUserInput(String userInput) {
-        validateUserInputRange(userInput);
-        validateUserInputType(userInput);
-        validateUserInputDistinct(userInput);
-    }
-
-    private static void validateReplayRange(String replay) {
+    private static void validateReplayInput(String replay) {
         if (!replay.equals("1") && !replay.equals("2")) {
             throw new IllegalArgumentException();
         }
