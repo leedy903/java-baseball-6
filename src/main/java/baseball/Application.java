@@ -8,34 +8,42 @@ import java.util.List;
 public class Application {
     private static final int randomNumberLength = 3;
     private static boolean isFinish = false;
-    private static boolean isStrike = false;
+    private static boolean isThreeStrike = false;
 
     public static void main(String[] args) {
-        playGame();
+        executeGame();
     }
 
-    private static void playGame() {
+    private static void executeGame() {
         initGame();
-        while (!isFinish) {
-            String computer = getRandomNumber();
-
-            isStrike = false;
-            while (!isStrike) {
-                String user = getUserInput();
-
-                int ball = countBall(computer, user);
-                int strike = countStrike(computer, user);
-
-                showResult(ball, strike);
-                checkReplay(strike);
-            }
-        }
+        playGame();
         Console.close();
     }
 
     private static void initGame() {
         System.out.println("숫자 야구 게임을 시작합니다.");
         isFinish = false;
+    }
+
+    private static void playGame() {
+        while (!isFinish) {
+            playOneRound();
+            checkReplay();
+        }
+    }
+
+    private static void playOneRound() {
+        isThreeStrike = false;
+        String computer = getRandomNumber();
+        while (!isThreeStrike) {
+            String user = getUserInput();
+            int ball = countBall(computer, user);
+            int strike = countStrike(computer, user);
+            showResult(ball, strike);
+            if (strike == randomNumberLength) {
+                isThreeStrike = true;
+            }
+        }
     }
 
     private static String getRandomNumber() {
@@ -116,9 +124,8 @@ public class Application {
         System.out.println(sb);
     }
 
-    private static void checkReplay(int strike) {
-        if (strike == randomNumberLength) {
-            isStrike = true;
+    private static void checkReplay() {
+        if (isThreeStrike == true) {
             System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료\n" +
                     "게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
             String replay = getUserReplayInput();
@@ -165,5 +172,4 @@ public class Application {
             throw new IllegalArgumentException();
         }
     }
-
 }
