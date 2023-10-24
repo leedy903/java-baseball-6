@@ -40,7 +40,6 @@ class ApplicationTest extends NsTest {
         );
     }
 
-
     @Test
     @DisplayName("유저가 숫자가 아닌 문자를 입력한 경우 예외 발생")
     void inputAlphabetTest() {
@@ -59,6 +58,19 @@ class ApplicationTest extends NsTest {
         );
     }
 
+    @Test
+    @DisplayName("유저가 재시작시 1, 2가 아닌 문자열 입력한 경우 예외 발생")
+    void replayInputTest() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> assertRandomNumberInRangeTest(
+                        () -> {
+                            run("135", "3");
+                            assertThat(output()).contains("3스트라이크", "게임 종료");
+                        }, 1, 3, 5
+                ))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
+    }
 
     @Override
     public void runMain() {
