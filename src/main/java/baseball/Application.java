@@ -40,9 +40,7 @@ public class Application {
             int ball = countBall(computer, user);
             int strike = countStrike(computer, user);
             showResult(ball, strike);
-            if (strike == randomNumberLength) {
-                isThreeStrike = true;
-            }
+            checkThreeStrike(strike);
         }
     }
 
@@ -74,7 +72,6 @@ public class Application {
         validateReplayInput(replay);
         return replay;
     }
-
 
     private static String integerListToString(List<Integer> numbers) {
         String result = "";
@@ -111,23 +108,29 @@ public class Application {
     }
 
     private static void showResult(int ball, int strike) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         if (ball > 0 && strike > 0) {
-            sb.append(ball).append("볼 ").append(strike).append("스트라이크");
+            result.append(ball).append("볼 ").append(strike).append("스트라이크");
         } else if (ball > 0 && strike == 0) {
-            sb.append(ball).append("볼");
+            result.append(ball).append("볼");
         } else if (strike > 0 && ball == 0) {
-            sb.append(strike).append("스트라이크");
+            result.append(strike).append("스트라이크");
         } else if (ball == 0 && strike == 0) {
-            sb.append("낫싱");
+            result.append("낫싱");
         }
-        System.out.println(sb);
+        System.out.println(result);
+    }
+
+    private static void checkThreeStrike(int strike) {
+        if (strike == randomNumberLength) {
+            isThreeStrike = true;
+        }
+        System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료");
     }
 
     private static void checkReplay() {
         if (isThreeStrike == true) {
-            System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료\n" +
-                    "게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
+            System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
             String replay = getUserReplayInput();
             if (replay.equals("2")) {
                 isFinish = true;
