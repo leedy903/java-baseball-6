@@ -9,13 +9,13 @@ public class Random {
     public Random() {
     }
 
-    public static String getRandomNumber(int size) {
-        List<Integer> randomNumbers = getRandomNumbers(size);
+    public static String pickRandomNumberInDigit(int size) {
+        List<Integer> randomNumbers = pickRandomNumbers(size);
         String randomNumber = integerListToString(randomNumbers);
         return randomNumber;
     }
 
-    private static List<Integer> getRandomNumbers(int size) {
+    private static List<Integer> pickRandomNumbers(int size) {
         List<Integer> randomNumbers = new ArrayList<>();
         while (randomNumbers.size() < size) {
             int randomNumber = Randoms.pickNumberInRange(1, 9);
