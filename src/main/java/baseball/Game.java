@@ -34,24 +34,24 @@ public class Game {
         String computer = random.pickRandomNumberInDigit(gameNumberLength);
         while (!isThreeStrike) {
             User user = new User();
-            String userInput = user.getUserInput();
-            playBaseballGame(computer, userInput);
+            String userGuess = user.guessInput();
+            playBaseballGame(computer, userGuess);
         }
     }
 
-    private static void playBaseballGame(String computer, String userInput) {
-        int ball = countBall(computer, userInput);
-        int strike = countStrike(computer, userInput);
+    private static void playBaseballGame(String computer, String userGuess) {
+        int ball = countBall(computer, userGuess);
+        int strike = countStrike(computer, userGuess);
         showResult(ball, strike);
         checkThreeStrike(strike);
     }
 
-    private static int countBall(String computer, String user) {
+    private static int countBall(String computer, String userGuess) {
         int ball = 0;
         for (int i = 0; i < gameNumberLength; i++) {
             char computerNumber = computer.charAt(i);
             for (int j = 0; j < gameNumberLength; j++) {
-                char userNumber = user.charAt(j);
+                char userNumber = userGuess.charAt(j);
                 if (i != j && computerNumber == userNumber) {
                     ball++;
                 }
@@ -60,11 +60,11 @@ public class Game {
         return ball;
     }
 
-    private static int countStrike(String computer, String user) {
+    private static int countStrike(String computer, String userGuess) {
         int strike = 0;
         for (int i = 0; i < gameNumberLength; i++) {
             char computerNumber = computer.charAt(i);
-            char userNumber = user.charAt(i);
+            char userNumber = userGuess.charAt(i);
             if (computerNumber == userNumber) {
                 strike++;
             }
@@ -97,7 +97,7 @@ public class Game {
         if (isThreeStrike == true) {
             System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
             User user = new User();
-            String replay = user.getUserReplayInput();
+            String replay = user.replayInput();
             if (replay.equals("2")) {
                 isFinish = true;
             }
