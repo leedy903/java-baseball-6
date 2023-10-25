@@ -31,7 +31,7 @@ public class Game {
     private static void playOneRound() {
         isThreeStrike = false;
         Random random = new Random();
-        String computer = random.getRandomNumber(gameNumberLength);
+        String computer = random.pickRandomNumberInDigit(gameNumberLength);
         while (!isThreeStrike) {
             User user = new User();
             String userInput = user.getUserInput();
