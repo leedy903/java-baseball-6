@@ -10,13 +10,13 @@ public class User {
     public User() {
     }
 
-    public static String getUserInput() {
+    public static String guessInput() {
         String userInput = Console.readLine();
         validateUserInput(userInput);
         return userInput;
     }
 
-    public static String getUserReplayInput() {
+    public static String replayInput() {
         String replay = Console.readLine();
         validateReplayInput(replay);
         return replay;
